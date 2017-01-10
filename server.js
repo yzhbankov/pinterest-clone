@@ -26,9 +26,11 @@ passport.use(new TwitterStrategy({
         callbackURL: "https://pinterest-cln.herokuapp.com/auth/twitter/callback"
     },
     function (token, tokenSecret, profile, done) {
-        User.findOrCreate({twitterId: profile.id}, function (error, user) {
-            return done(error, user);
-        })
+
+        session.user = profile.username;
+        /*        User.findOrCreate({twitterId: profile.id}, function (error, user) {
+         return done(error, user);
+         })*/
     }
 ));
 
@@ -38,8 +40,8 @@ app.set('view engine', 'jade');
 app.use(session({secret: "secretword", resave: false, saveUninitialized: true}));
 
 app.get('/', function (req, res) {
-    if (req.user) {
-        res.render('layout.jade', {"username": req.user.username});
+    if (session.user) {
+        res.render('layout.jade', {"username": session.user});
     } else {
         res.render('layout.jade', {});
     }
