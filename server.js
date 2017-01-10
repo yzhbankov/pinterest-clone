@@ -38,11 +38,7 @@ app.set('view engine', 'jade');
 app.use(session({secret: "secretword", resave: false, saveUninitialized: true}));
 
 app.get('/', function (req, res) {
-    if (req.user) {
-        res.render('layout.jade', {"username": req.user});
-    } else {
-        res.render('layout.jade', {});
-    }
+    res.render('layout.jade', {});
 });
 
 app.get('/auth/twitter', passport.authenticate('twitter'));
