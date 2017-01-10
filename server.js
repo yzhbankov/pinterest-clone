@@ -38,10 +38,15 @@ app.set('view engine', 'jade');
 app.use(session({secret: "secretword", resave: false, saveUninitialized: true}));
 
 app.get('/', function (req, res) {
-    res.render('layout.jade', {});
+    if (req.user) {
+        res.render('layout.jade', {"username": req.user.username});
+    } else {
+        res.render('layout.jade', {});
+    }
 });
 
-app.get('/auth/twitter', passport.authenticate('twitter'));
+app.get('/auth/twitter', passport.authenticate('twitter', {scope: ['email']}));
+
 
 app.get('/auth/twitter/callback',
     passport.authenticate('twitter', {
