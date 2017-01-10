@@ -20,21 +20,6 @@ var TwitterStrategy = require('passport-twitter').Strategy;
     "https://pinterest-cln.herokuapp.com/auth/twitter/callback",
     "HMAC-SHA1"
 );*/
-
-app.use(express.static('public'));
-
-app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
-app.use(session({secret: "secretword", resave: false, saveUninitialized: true}));
-
-app.get('/', function (req, res) {
-    if (req.user) {
-        res.render('layout.jade', {"username": req.user.username});
-    } else {
-        res.render('layout.jade', { });
-    }
-});
-
 passport.use(new TwitterStrategy({
         consumerKey: 'AHI1ElA7WMFzF4QhzZcxlMdVP',
         consumerSecret: 'EcxtYxF8ochjraTnvrLpGYujQHMpERDLHcr4bipB9WVwrq8e5h',
@@ -47,11 +32,32 @@ passport.use(new TwitterStrategy({
     }
 ));
 
+app.use(express.static('public'));
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.use(session({secret: "secretword", resave: false, saveUninitialized: true}));
+
+app.get('/', function (req, res) {
+    if (req.user) {
+        res.render('layout.jade', {"username": req.user.username});
+    } else {
+        res.render('layout.jade', {});
+    }
+});
+
+
+
 app.get('/auth/twitter', passport.authenticate('twitter'));
 
 app.get('/auth/twitter/callback',
     passport.authenticate('twitter', { successRedirect: '/',
-        failureRedirect: '/login' }));
+        failureRedirect: '/failure' }));
+
+app.get('/failure',
+    function(){
+        console.log('Something is wrong');
+    });
+
 
 app.listen(process.env.PORT || 3000, function () {
     console.log('Listening port 3000');
