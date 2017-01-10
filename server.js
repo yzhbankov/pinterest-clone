@@ -31,7 +31,7 @@ app.get('/', function (req, res) {
     if (req.user) {
         res.render('layout.jade', {"username": req.user.username});
     } else {
-        res.render('layout.jade', {});
+        res.render('layout.jade', { });
     }
 });
 
