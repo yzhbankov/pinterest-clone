@@ -28,7 +28,11 @@ app.set('view engine', 'jade');
 app.use(session({secret: "secretword", resave: false, saveUninitialized: true}));
 
 app.get('/', function (req, res) {
-    res.render('layout.jade', {username: req.user.username});
+    if (req.user) {
+        res.render('layout.jade', {"username": req.user.username});
+    } else {
+        res.render('layout.jade', {});
+    }
 });
 
 passport.use(new TwitterStrategy({
