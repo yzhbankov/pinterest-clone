@@ -12,14 +12,14 @@ var passport = require('passport');
 var TwitterStrategy = require('passport-twitter').Strategy;
 
 /*var oauth = new OAuth(
-    "https://api.twitter.com/oauth/request_token",
-    "https://api.twitter.com/oauth/access_token",
-    "AHI1ElA7WMFzF4QhzZcxlMdVP",
-    "EcxtYxF8ochjraTnvrLpGYujQHMpERDLHcr4bipB9WVwrq8e5h",
-    "1.0",
-    "https://pinterest-cln.herokuapp.com/auth/twitter/callback",
-    "HMAC-SHA1"
-);*/
+ "https://api.twitter.com/oauth/request_token",
+ "https://api.twitter.com/oauth/access_token",
+ "AHI1ElA7WMFzF4QhzZcxlMdVP",
+ "EcxtYxF8ochjraTnvrLpGYujQHMpERDLHcr4bipB9WVwrq8e5h",
+ "1.0",
+ "https://pinterest-cln.herokuapp.com/auth/twitter/callback",
+ "HMAC-SHA1"
+ );*/
 passport.use(new TwitterStrategy({
         consumerKey: 'AHI1ElA7WMFzF4QhzZcxlMdVP',
         consumerSecret: 'EcxtYxF8ochjraTnvrLpGYujQHMpERDLHcr4bipB9WVwrq8e5h',
@@ -39,25 +39,24 @@ app.use(session({secret: "secretword", resave: false, saveUninitialized: true}))
 
 app.get('/', function (req, res) {
     if (req.user) {
-        res.render('layout.jade', {"username": req.user.username});
+        res.render('layout.jade', {"username": req.user});
     } else {
         res.render('layout.jade', {});
     }
 });
 
-
-
 app.get('/auth/twitter', passport.authenticate('twitter'));
 
 app.get('/auth/twitter/callback',
-    passport.authenticate('twitter', { successRedirect: '/',
-        failureRedirect: '/failure' }));
+    passport.authenticate('twitter', {
+        successRedirect: '/',
+        failureRedirect: '/failure'
+    }));
 
 app.get('/failure',
-    function(){
+    function () {
         console.log('Something is wrong');
     });
-
 
 app.listen(process.env.PORT || 3000, function () {
     console.log('Listening port 3000');
