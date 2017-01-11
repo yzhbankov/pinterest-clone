@@ -6,41 +6,28 @@ var app = express();
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/pinterest_clone';
 var session = require('express-session');
-var path = require('path');
-
 var passport = require('passport');
 var TwitterStrategy = require('passport-twitter').Strategy;
 
-/*var oauth = new OAuth(
- "https://api.twitter.com/oauth/request_token",
- "https://api.twitter.com/oauth/access_token",
- "AHI1ElA7WMFzF4QhzZcxlMdVP",
- "EcxtYxF8ochjraTnvrLpGYujQHMpERDLHcr4bipB9WVwrq8e5h",
- "1.0",
- "https://pinterest-cln.herokuapp.com/auth/twitter/callback",
- "HMAC-SHA1"
- );*/
 passport.use(new TwitterStrategy({
         consumerKey: 'AHI1ElA7WMFzF4QhzZcxlMdVP',
         consumerSecret: 'EcxtYxF8ochjraTnvrLpGYujQHMpERDLHcr4bipB9WVwrq8e5h',
         callbackURL: "https://pinterest-cln.herokuapp.com/auth/twitter/callback"
     },
     function (token, tokenSecret, profile, done) {
-
         session.user = profile.username;
+        console.log(session.user);
         console.log(profile.displayName);
         console.log(profile.username);
-        /*        User.findOrCreate({twitterId: profile.id}, function (error, user) {
-         return done(error, user);
-         })*/
     }
 ));
 
 app.use(express.static('public'));
+app.use(passport.initialize());
+app.use(passport.session());
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(session({secret: "secretword", resave: false, saveUninitialized: true}));
-
 app.get('/', function (req, res) {
     if (session.user) {
         res.render('layout.jade', {"username": session.user});
@@ -51,14 +38,13 @@ app.get('/', function (req, res) {
 
 app.get('/auth/twitter', passport.authenticate('twitter', {scope: ['email']}));
 
-
 app.get('/auth/twitter/callback',
-    passport.authenticate('twitter', { failureRedirect: '/' }),
-    function(req, res) {
-        res.redirect('/');
-    });
+    passport.authenticate('twitter', {
+        successRedirect: '/success',
+        failureRedirect: '/error'
+    }));
 
-app.get('/failure',
+app.get('/error',
     function () {
         console.log('Something is wrong');
     });
