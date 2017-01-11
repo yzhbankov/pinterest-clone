@@ -53,10 +53,10 @@ app.get('/auth/twitter', passport.authenticate('twitter', {scope: ['email']}));
 
 
 app.get('/auth/twitter/callback',
-    passport.authenticate('twitter', {
-        successRedirect: '/',
-        failureRedirect: '/failure'
-    }));
+    passport.authenticate('twitter', { failureRedirect: '/' }),
+    function(req, res) {
+        res.redirect('/');
+    });
 
 app.get('/failure',
     function () {
