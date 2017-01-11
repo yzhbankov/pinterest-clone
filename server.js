@@ -9,12 +9,23 @@ var session = require('express-session');
 var passport = require('passport');
 var TwitterStrategy = require('passport-twitter').Strategy;
 
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+    done(null, user);
+});
+
 passport.use(new TwitterStrategy({
         consumerKey: 'AHI1ElA7WMFzF4QhzZcxlMdVP',
         consumerSecret: 'EcxtYxF8ochjraTnvrLpGYujQHMpERDLHcr4bipB9WVwrq8e5h',
-        callbackURL: "https://pinterest-cln.herokuapp.com/auth/twitter/callback"
+        callbackURL: "http://localhost:3000/auth/twitter/callback"
     },
     function (token, tokenSecret, profile, done) {
+        process.nextTick(function () {
+            return done(null, profile);
+        });
         session.user = profile.username;
         console.log(session.user);
         console.log(profile.displayName);
@@ -28,6 +39,7 @@ app.use(passport.session());
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(session({secret: "secretword", resave: false, saveUninitialized: true}));
+
 app.get('/', function (req, res) {
     if (session.user) {
         res.render('layout.jade', {"username": session.user});
@@ -36,11 +48,13 @@ app.get('/', function (req, res) {
     }
 });
 
-app.get('/auth/twitter', passport.authenticate('twitter', {scope: ['email']}));
+app.get('/auth/twitter', passport.authenticate('twitter', {scope: ['email']}), function(req, res) {
+    console.log(req);
+});
 
 app.get('/auth/twitter/callback',
     passport.authenticate('twitter', {
-        successRedirect: '/success',
+        successRedirect: '/',
         failureRedirect: '/error'
     }));
 
