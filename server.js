@@ -23,7 +23,7 @@ var TwitterStrategy = require('passport-twitter').Strategy;
 passport.use(new TwitterStrategy({
         consumerKey: 'AHI1ElA7WMFzF4QhzZcxlMdVP',
         consumerSecret: 'EcxtYxF8ochjraTnvrLpGYujQHMpERDLHcr4bipB9WVwrq8e5h',
-        callbackURL: "http://localhost:3000/auth/twitter/callback"
+        callbackURL: "https://pinterest-cln.herokuapp.com/auth/twitter/callback"
     },
     function (token, tokenSecret, profile, done) {
 
