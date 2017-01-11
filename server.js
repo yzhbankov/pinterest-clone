@@ -26,9 +26,6 @@ passport.use(new TwitterStrategy({
         process.nextTick(function () {
             return done(null, profile);
         });
-
-        console.log(profile.displayName);
-        console.log(profile.username);
     }
 ));
 
@@ -40,8 +37,8 @@ app.set('view engine', 'jade');
 app.use(session({secret: "secretword", resave: false, saveUninitialized: true}));
 
 app.get('/', function (req, res) {
-    if (req.session["passport"]) {
-        var username = req.session["passport"].user.username;
+    if (req.session.passport) {
+        var username = req.session.passport.user.username;
         res.render('layout.jade', {"username": username});
     } else {
         res.render('layout.jade', {});
