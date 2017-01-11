@@ -9,11 +9,11 @@ var session = require('express-session');
 var passport = require('passport');
 var TwitterStrategy = require('passport-twitter').Strategy;
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
     done(null, user);
 });
 
-passport.deserializeUser(function(user, done) {
+passport.deserializeUser(function (user, done) {
     done(null, user);
 });
 
@@ -26,8 +26,7 @@ passport.use(new TwitterStrategy({
         process.nextTick(function () {
             return done(null, profile);
         });
-        session.user = profile.username;
-        console.log(session.user);
+
         console.log(profile.displayName);
         console.log(profile.username);
     }
@@ -41,14 +40,15 @@ app.set('view engine', 'jade');
 app.use(session({secret: "secretword", resave: false, saveUninitialized: true}));
 
 app.get('/', function (req, res) {
-    if (session.user) {
-        res.render('layout.jade', {"username": session.user});
+    if (req.session["passport"]) {
+        var username = req.session["passport"].user.username;
+        res.render('layout.jade', {"username": username});
     } else {
         res.render('layout.jade', {});
     }
 });
 
-app.get('/auth/twitter', passport.authenticate('twitter', {scope: ['email']}), function(req, res) {
+app.get('/auth/twitter', passport.authenticate('twitter', {scope: ['email']}), function (req, res) {
     console.log(req);
 });
 
@@ -63,6 +63,11 @@ app.get('/error',
         console.log('Something is wrong');
     });
 
+app.get('/logout', function (req, res) {
+    req.session.destroy();
+    console.log('you are logout');
+    res.redirect('/');
+});
 app.listen(process.env.PORT || 3000, function () {
     console.log('Listening port 3000');
 });
