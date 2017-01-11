@@ -30,6 +30,9 @@ body
                 a(href="/").navbar-brand Home
                 a(href="/allpics").navbar-brand All pics
                 a(href="/mypics").navbar-brand My pics
+                span.icon-bar
+                -if(username)
+                    span.navbar-brand Hello #{username}!
 
                 div.collapse.navbar-collapse
                     ul.nav.navbar-nav.navbar-right
@@ -42,6 +45,5 @@ body
 div.board
     div.title BookStock
     div Spread The Knowledge
-    h2 #{username}
 block content
 
