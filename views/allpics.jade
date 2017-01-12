@@ -1,0 +1,23 @@
+//
+   Created by Владелец on 24.12.2016.
+doctype html
+extends ./index.jade
+block append content
+    div.container
+        div.grid
+            -if(users.length > 0)
+            -for(var i = 0; i < users.length; i++)
+                div.grid-item
+                    div.main-img
+                        img(src=pics_url[i])
+                        div.description #{descriptions[i]}
+                    div.info
+                        a(href="#")
+                            img(src=profiles[i] title=users[i])
+                        div.like.btn.btn-default.btn-sm
+                            span.glyphicon.glyphicon-star
+
+
+    include ./footer.jade
+
+script(src='/js/mansory.js')

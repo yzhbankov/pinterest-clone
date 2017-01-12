@@ -14,6 +14,7 @@ html
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
     integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
     crossorigin="anonymous")
+
     link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous")
     title Book club
@@ -30,9 +31,19 @@ body
                 a(href="/").navbar-brand Home
                 a(href="/allpics").navbar-brand All pics
                 a(href="/mypics").navbar-brand My pics
+
                 span.icon-bar
                 -if(username)
                     span.navbar-brand Hello #{username}!
+                    div.dropdown
+                        a(data-toggle="dropdown").dropdown-toggle Add pic
+                        ul(role="menu").dropdown-menu
+                            form(action="/add" method="POST")
+                                div.form-group
+                                    input(type="text" placeholder="Pic url...:" name="pic_url").form-control#text
+                                div.form-group
+                                    input(type="text" placeholder="Pic Description:" name="description").form-control#text
+                                button(type="submit").btn.btn-primary.btn-block Submit
 
                 div.collapse.navbar-collapse
                     ul.nav.navbar-nav.navbar-right
@@ -47,3 +58,4 @@ div.board
     div Spread The Knowledge
 block content
 
+script(src="https://npmcdn.com/masonry-layout@4.1/dist/masonry.pkgd.min.js")
