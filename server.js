@@ -4,6 +4,7 @@
 var express = require('express');
 var app = express();
 var MongoClient = require('mongodb').MongoClient;
+var shortid = require('shortid');
 var bodyParser = require('body-parser');
 var url = 'mongodb://localhost:27017/pinterest_clone';
 var session = require('express-session');
@@ -31,6 +32,8 @@ passport.use(new TwitterStrategy({
 ));
 
 app.use(express.static('public'));
+app.use('/allpics', express.static('public'));
+app.use('/mypics', express.static('public'));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -91,6 +94,7 @@ app.post('/add', function (req, res) {
                 console.log("picture already exist");
             } else {
                 db.collection('pictures').insertOne({
+                    "id": shortid.generate(),
                     "username": username,
                     "pic_url": pic_url,
                     "description": description,
@@ -112,59 +116,17 @@ app.get('/allpics', function (req, res) {
         console.log("user is not authorized");
         res.redirect('/');
     } else {
+        var username = req.session.passport.user.username;
         MongoClient.connect(url, function (err, db) {
             var resent = db.collection('pictures').find({}, {
                 'username': true,
                 "pic_url": true,
                 'description': true,
-                "profile_img":true
+                "profile_img": true
             }).toArray(function (err, result) {
                 if (result.length < 1) {
                     console.log('no pictures found');
-                    res.render('allpics.jade', {"pics": []});
-                } else {
-                    console.log('pictures found');
-                    var username = req.session.passport.user.username;
-                    var users = [];
-                    var pics_url = [];
-                    var descriptions = [];
-                    var profiles = [];
-                    for (var i = 0; i < result.length; i++) {
-                        users.push(result[i].username);
-                        pics_url.push(result[i].pic_url);
-                        descriptions.push(result[i].description);
-                        profiles.push(result[i].profile_img);
-                    }
-                    res.render('allpics.jade', {
-                        "username":username,
-                        "users": users,
-                        "pics_url": pics_url,
-                        "descriptions": descriptions,
-                        "profiles": profiles
-                    });
-                }
-            });
-            db.close();
-        });
-    }
-    });
-
-app.get('/mypics', function(req, res){
-    if (!req.session.passport) {
-        console.log("user is not authorized");
-        res.redirect('/');
-    } else {
-        MongoClient.connect(url, function (err, db) {
-            var username = req.session.passport.user.username;
-            var resent = db.collection('pictures').find({"username":username}, {
-                'username': true,
-                "pic_url": true,
-                'description': true,
-                "profile_img":true
-            }).toArray(function (err, result) {
-                if (result.length < 1) {
-                    console.log('no pictures found');
-                    res.render('allpics.jade', {"pics": []});
+                    res.render('allpics.jade', {"username":username,"pics_url": []});
                 } else {
                     console.log('pictures found');
                     var users = [];
@@ -178,7 +140,7 @@ app.get('/mypics', function(req, res){
                         profiles.push(result[i].profile_img);
                     }
                     res.render('allpics.jade', {
-                        "username":username,
+                        "username": username,
                         "users": users,
                         "pics_url": pics_url,
                         "descriptions": descriptions,
@@ -191,6 +153,65 @@ app.get('/mypics', function(req, res){
     }
 });
 
+app.get('/mypics', function (req, res) {
+    if (!req.session.passport) {
+        console.log("user is not authorized");
+        res.redirect('/');
+    } else {
+        MongoClient.connect(url, function (err, db) {
+            var username = req.session.passport.user.username;
+            var resent = db.collection('pictures').find({"username": username}, {
+                "id": true,
+                'username': true,
+                "pic_url": true,
+                'description': true,
+                "profile_img": true
+            }).toArray(function (err, result) {
+                if (result.length < 1) {
+                    res.render('mypics.jade', {"username":username,"pics_url": []});
+                } else {
+                    var users = [];
+                    var id = [];
+                    var pics_url = [];
+                    var descriptions = [];
+                    var profiles = [];
+                    for (var i = 0; i < result.length; i++) {
+                        id.push(result[i].id);
+                        users.push(result[i].username);
+                        pics_url.push(result[i].pic_url);
+                        descriptions.push(result[i].description);
+                        profiles.push(result[i].profile_img);
+                    }
+                    res.render('mypics.jade', {
+                        "username": username,
+                        "users": users,
+                        "pics_url": pics_url,
+                        "descriptions": descriptions,
+                        "profiles": profiles,
+                        "id": id
+                    });
+                }
+            });
+            db.close();
+        });
+    }
+});
+
+app.get('/delete/:id', function (req, res) {
+    if (!req.session.passport) {
+        console.log("user is not authorized");
+        res.redirect('/');
+    } else {
+        var username = req.params.username;
+        var id = req.params.id;
+        MongoClient.connect(url, function (err, db) {
+            db.collection('pictures').remove({"id":id});
+            db.close();
+            res.redirect('/mypics');
+
+        });
+    }
+})
 app.get('/logout', function (req, res) {
     req.session.destroy();
     console.log('you are logout');

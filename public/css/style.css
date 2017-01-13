@@ -9,12 +9,8 @@ background-color: ghostwhite;
     position:fixed;
     bottom: 20px;
 }
-.grid{
-    text-align: center;
-    margin-top: 30px;
-    position: relative;
-    width: 1000px;
-    height: 2214px;
+.grid {
+    margin: 40px auto;
 }
 .grid-item {
     position: relative;
@@ -44,9 +40,8 @@ background-color: ghostwhite;
 }
 .info img{
     width:35px;
-    margin-right: 100px;
-
+    margin-right: 35px;
 }
 .like{
-
+    margin-left: 25px;
 }

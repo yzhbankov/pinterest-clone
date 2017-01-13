@@ -14,10 +14,11 @@ block append content
                     div.info
                         a(href="#")
                             img(src=profiles[i] title=users[i])
+                        a(href="/delete/"+id[i])
+                            button.btn.btn-default X
                         div.like.btn.btn-default.btn-sm
                             span.glyphicon.glyphicon-star
 
-    script(src='/js/sellectByAuthor.js')
     script(src='/js/mansory.js')
 
     include ./footer.jade
