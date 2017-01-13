@@ -45,7 +45,7 @@ app.get('/', function (req, res) {
     if (req.session.passport) {
         var username = req.session.passport.user.username;
         var profile_img = req.session.passport.user._json.profile_image_url;
-
+        console.log(profile_img);
         MongoClient.connect(url, function (err, db) {
             db.collection('users').findOne({"username": username}, function (err, item) {
                 if (item) {
@@ -65,7 +65,7 @@ app.get('/', function (req, res) {
             });
         });
 
-        res.render('index.jade', {"username": username});
+        res.render('index.jade', {"username": username, "profile_img": profile_img});
     } else {
         res.render('index.jade', {});
     }
@@ -117,6 +117,7 @@ app.get('/allpics', function (req, res) {
         res.redirect('/');
     } else {
         var username = req.session.passport.user.username;
+        var profile_img = req.session.passport.user._json.profile_image_url;
         MongoClient.connect(url, function (err, db) {
             var resent = db.collection('pictures').find({}, {
                 'username': true,
@@ -126,7 +127,7 @@ app.get('/allpics', function (req, res) {
             }).toArray(function (err, result) {
                 if (result.length < 1) {
                     console.log('no pictures found');
-                    res.render('allpics.jade', {"username":username,"pics_url": []});
+                    res.render('allpics.jade', {"profile_img":profile_img,"pics_url": []});
                 } else {
                     console.log('pictures found');
                     var users = [];
@@ -140,6 +141,7 @@ app.get('/allpics', function (req, res) {
                         profiles.push(result[i].profile_img);
                     }
                     res.render('allpics.jade', {
+                        "profile_img":profile_img,
                         "username": username,
                         "users": users,
                         "pics_url": pics_url,
@@ -160,6 +162,7 @@ app.get('/mypics', function (req, res) {
     } else {
         MongoClient.connect(url, function (err, db) {
             var username = req.session.passport.user.username;
+            var profile_img = req.session.passport.user._json.profile_image_url;
             var resent = db.collection('pictures').find({"username": username}, {
                 "id": true,
                 'username': true,
@@ -168,7 +171,7 @@ app.get('/mypics', function (req, res) {
                 "profile_img": true
             }).toArray(function (err, result) {
                 if (result.length < 1) {
-                    res.render('mypics.jade', {"username":username,"pics_url": []});
+                    res.render('mypics.jade', {"profile_img":profile_img,"pics_url": []});
                 } else {
                     var users = [];
                     var id = [];
@@ -183,6 +186,7 @@ app.get('/mypics', function (req, res) {
                         profiles.push(result[i].profile_img);
                     }
                     res.render('mypics.jade', {
+                        "profile_img": profile_img,
                         "username": username,
                         "users": users,
                         "pics_url": pics_url,
@@ -211,7 +215,7 @@ app.get('/delete/:id', function (req, res) {
 
         });
     }
-})
+});
 app.get('/logout', function (req, res) {
     req.session.destroy();
     console.log('you are logout');

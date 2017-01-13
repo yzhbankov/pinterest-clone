@@ -32,20 +32,19 @@ body
                 a(href="/").navbar-brand Home
                 a(href="/allpics").navbar-brand All pics
                 a(href="/mypics").navbar-brand My pics
-
-                span.icon-bar
                 -if(username)
-                    span.navbar-brand Hello #{username}!
-                    div.dropdown
-                        a(data-toggle="dropdown").dropdown-toggle Add pic
-                        ul(role="menu").dropdown-menu
-                            form(action="/add" method="POST")
-                                div.form-group
-                                    input(type="text" placeholder="Pic url...:" name="pic_url").form-control#text
-                                div.form-group
-                                    input(type="text" placeholder="Pic Description:" name="description").form-control#text
-                                button(type="submit").btn.btn-primary.btn-block Submit
-
+                    span.icon-bar
+                        div.navbar-brand
+                            a(data-toggle="dropdown").dropdown-toggle Add pic
+                            ul(role="menu").dropdown-menu
+                                form(action="/add" method="POST")
+                                    div.form-group
+                                        input(type="text" placeholder="Pic url...:" name="pic_url").form-control#text
+                                    div.form-group
+                                        input(type="text" placeholder="Pic Description:" name="description").form-control#text
+                                    button(type="submit").btn.btn-primary.btn-block Submit
+                    span.icon-bar
+                        img(src=profile_img)
                 div.collapse.navbar-collapse
                     ul.nav.navbar-nav.navbar-right
                         li.signup-btn
