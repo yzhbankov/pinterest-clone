@@ -124,6 +124,7 @@ app.get('/allpics', function (req, res) {
                     res.render('allpics.jade', {"pics": []});
                 } else {
                     console.log('pictures found');
+                    var username = req.session.passport.user.username;
                     var users = [];
                     var pics_url = [];
                     var descriptions = [];
@@ -135,6 +136,7 @@ app.get('/allpics', function (req, res) {
                         profiles.push(result[i].profile_img);
                     }
                     res.render('allpics.jade', {
+                        "username":username,
                         "users": users,
                         "pics_url": pics_url,
                         "descriptions": descriptions,
@@ -146,6 +148,48 @@ app.get('/allpics', function (req, res) {
         });
     }
     });
+
+app.get('/mypics', function(req, res){
+    if (!req.session.passport) {
+        console.log("user is not authorized");
+        res.redirect('/');
+    } else {
+        MongoClient.connect(url, function (err, db) {
+            var username = req.session.passport.user.username;
+            var resent = db.collection('pictures').find({"username":username}, {
+                'username': true,
+                "pic_url": true,
+                'description': true,
+                "profile_img":true
+            }).toArray(function (err, result) {
+                if (result.length < 1) {
+                    console.log('no pictures found');
+                    res.render('allpics.jade', {"pics": []});
+                } else {
+                    console.log('pictures found');
+                    var users = [];
+                    var pics_url = [];
+                    var descriptions = [];
+                    var profiles = [];
+                    for (var i = 0; i < result.length; i++) {
+                        users.push(result[i].username);
+                        pics_url.push(result[i].pic_url);
+                        descriptions.push(result[i].description);
+                        profiles.push(result[i].profile_img);
+                    }
+                    res.render('allpics.jade', {
+                        "username":username,
+                        "users": users,
+                        "pics_url": pics_url,
+                        "descriptions": descriptions,
+                        "profiles": profiles
+                    });
+                }
+            });
+            db.close();
+        });
+    }
+});
 
 app.get('/logout', function (req, res) {
     req.session.destroy();
