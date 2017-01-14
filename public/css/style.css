@@ -21,6 +21,10 @@ background-color: ghostwhite;
     box-shadow: 2px 2px 5px rgba(102, 102, 102, 0.5);
     border: 2px solid hsla(0, 0%, 0%, 0.5);
 }
+.logo{
+    margin-top: -10px;
+    width:40px;
+}
 .grid-item:hover{
     box-shadow: 0px 2px 2px #666666;
     -moz-box-shadow: 0px 2px 2px #666666;

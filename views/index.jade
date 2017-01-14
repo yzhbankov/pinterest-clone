@@ -18,6 +18,7 @@ html
     link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous")
     script(src="https://npmcdn.com/masonry-layout@4.1/dist/masonry.pkgd.min.js")
+    link( rel="shortcut icon" href="/img/pinterest_logo.png")
     title Pinterest clone
 body
 
@@ -27,10 +28,11 @@ body
                 div.navbar-header
                     button(type="button" data-toggle="collapse" data-target="#myNavbar").navbar-toggle
                     span.icon-bar
-                    span.icon-bar
-                    span.icon-bar
+                a(href="#").navbar-brand
+                    img(src='/img/pinterest_logo.png').logo
                 a(href="/").navbar-brand All pics
-                a(href="/mypics").navbar-brand My pics
+                -if(username)
+                    a(href="/mypics").navbar-brand My pics
                 -if(username)
                         div.navbar-brand
                             a(data-toggle="dropdown").dropdown-toggle Add pic
