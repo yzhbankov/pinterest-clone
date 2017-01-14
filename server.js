@@ -44,7 +44,7 @@ app.set('view engine', 'jade');
 app.use(session({secret: "secretword", resave: false, saveUninitialized: true}));
 
 app.get('/', function (req, res) {
-    var username = req.session.passport.user.username;
+
     MongoClient.connect(url, function (err, db) {
         var resent = db.collection('pictures').find({}, {
             "id": true,
