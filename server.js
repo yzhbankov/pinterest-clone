@@ -6,7 +6,8 @@ var app = express();
 var MongoClient = require('mongodb').MongoClient;
 var shortid = require('shortid');
 var bodyParser = require('body-parser');
-var url = 'mongodb://localhost:27017/pinterest_clone';
+//var url = 'mongodb://localhost:27017/pinterest_clone';
+var url = 'mongodb://yzhbankov:password1360@ds111489.mlab.com:11489/heroku_j0g6h3j6';
 var session = require('express-session');
 var passport = require('passport');
 var TwitterStrategy = require('passport-twitter').Strategy;
@@ -22,7 +23,8 @@ passport.deserializeUser(function (user, done) {
 passport.use(new TwitterStrategy({
         consumerKey: 'AHI1ElA7WMFzF4QhzZcxlMdVP',
         consumerSecret: 'EcxtYxF8ochjraTnvrLpGYujQHMpERDLHcr4bipB9WVwrq8e5h',
-        callbackURL: "http://localhost:3000/auth/twitter/callback"
+        //callbackURL: "http://localhost:3000/auth/twitter/callback"
+        callbackURL: "https://pinterestcln.herokuapp.com/auth/twitter/callback"
     },
     function (token, tokenSecret, profile, done) {
         process.nextTick(function () {
