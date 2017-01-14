@@ -138,50 +138,6 @@ app.post('/add', function (req, res) {
     res.redirect('/');
 });
 
-app.get('/allpics', function (req, res) {
-    if (!req.session.passport) {
-        console.log("user is not authorized");
-        res.redirect('/');
-    } else {
-        var username = req.session.passport.user.username;
-        var profile_img = req.session.passport.user._json.profile_image_url;
-        MongoClient.connect(url, function (err, db) {
-            var resent = db.collection('pictures').find({}, {
-                'username': true,
-                "pic_url": true,
-                'description': true,
-                "profile_img": true
-            }).toArray(function (err, result) {
-                if (result.length < 1) {
-                    console.log('no pictures found');
-                    res.render('allpics.jade', {"profile_img": profile_img, "pics_url": []});
-                } else {
-                    console.log('pictures found');
-                    var users = [];
-                    var pics_url = [];
-                    var descriptions = [];
-                    var profiles = [];
-                    for (var i = 0; i < result.length; i++) {
-                        users.push(result[i].username);
-                        pics_url.push(result[i].pic_url);
-                        descriptions.push(result[i].description);
-                        profiles.push(result[i].profile_img);
-                    }
-                    res.render('allpics.jade', {
-                        "profile_img": profile_img,
-                        "username": username,
-                        "users": users,
-                        "pics_url": pics_url,
-                        "descriptions": descriptions,
-                        "profiles": profiles
-                    });
-                }
-            });
-            db.close();
-        });
-    }
-});
-
 app.get('/mypics', function (req, res) {
     if (!req.session.passport) {
         console.log("user is not authorized");
