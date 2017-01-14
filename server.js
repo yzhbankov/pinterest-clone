@@ -44,32 +44,40 @@ app.use(session({secret: "secretword", resave: false, saveUninitialized: true}))
 app.get('/', function (req, res) {
     MongoClient.connect(url, function (err, db) {
         var resent = db.collection('pictures').find({}, {
+            "id": true,
             'username': true,
             "pic_url": true,
             'description': true,
-            "profile_img": true
+            "profile_img": true,
+            "likes": true
         }).toArray(function (err, result) {
             if (result.length < 1) {
                 console.log('no pictures found');
                 res.render('allpics.jade', {"profile_img": profile_img, "pics_url": []});
             } else {
                 var users = [];
+                var ids = [];
                 var pics_url = [];
                 var descriptions = [];
                 var profiles = [];
+                var likes = [];
                 for (var i = 0; i < result.length; i++) {
                     users.push(result[i].username);
+                    ids.push(result[i].id);
                     pics_url.push(result[i].pic_url);
                     descriptions.push(result[i].description);
                     profiles.push(result[i].profile_img);
+                    likes.push(result[i].likes.length);
                 }
                 res.render('allpics.jade', {
+                    "ids": ids,
                     "profile_img": profile_img,
                     "username": username,
                     "users": users,
                     "pics_url": pics_url,
                     "descriptions": descriptions,
-                    "profiles": profiles
+                    "profiles": profiles,
+                    "likes":likes
                 });
             }
         });
@@ -125,7 +133,8 @@ app.post('/add', function (req, res) {
                     "username": username,
                     "pic_url": pic_url,
                     "description": description,
-                    "profile_img": profile_img
+                    "profile_img": profile_img,
+                    "likes": []
                 }, function (err, result) {
                     if (!err) {
                         console.log("picture added successfuly");
@@ -189,7 +198,6 @@ app.get('/delete/:id', function (req, res) {
         console.log("user is not authorized");
         res.redirect('/');
     } else {
-        var username = req.params.username;
         var id = req.params.id;
         MongoClient.connect(url, function (err, db) {
             db.collection('pictures').remove({"id": id});
@@ -199,6 +207,35 @@ app.get('/delete/:id', function (req, res) {
         });
     }
 });
+
+app.get('/like/:id', function (req, res) {
+    if (!req.session.passport) {
+        console.log("user is not authorized");
+        res.send('not authorised');
+    } else {
+        var username = req.session.passport.user.username;
+        var id = req.params.id;
+        MongoClient.connect(url, function (err, db) {
+            db.collection('pictures').findOne({"id": id}, function (err, item) {
+                if (item) {
+                    console.log(item.likes);
+                    var newlikes = item.likes;
+                    if (newlikes.indexOf(username) == -1) {
+                        newlikes.push(username);
+                    } else {
+                        newlikes.splice(newlikes.indexOf(username), 1);
+                    }
+                    db.collection('pictures').update({id: id}, {$set: {likes: newlikes}}, function (err, doc) {
+                        db.close();
+                    });
+                    res.send({"likes": newlikes.length});
+                }
+            });
+
+        })
+    }
+});
+
 app.get('/logout', function (req, res) {
     req.session.destroy();
     console.log('you are logout');

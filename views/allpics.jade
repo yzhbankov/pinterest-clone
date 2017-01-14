@@ -14,11 +14,13 @@ block append content
                     div.info
                         a(href="#")
                             img(src=profiles[i] title=users[i])
-                        div.like.btn.btn-default.btn-sm
-                            span.glyphicon.glyphicon-star
+                        div(data-id=ids[i]).like.btn.btn-default.btn-sm
+                            span.likes-num #{likes[i]}
+                            span.glyphicon.glyphicon.glyphicon-star
 
     script(src='/js/sellectByAuthor.js')
     script(src='/js/mansory.js')
+    script(src='/js/likes.js')
 
     include ./footer.jade
 
