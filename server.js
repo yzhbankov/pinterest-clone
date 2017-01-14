@@ -52,7 +52,6 @@ app.get('/', function (req, res) {
             "likes": true
         }).toArray(function (err, result) {
             if (result.length < 1) {
-                console.log('no pictures found');
                 res.render('allpics.jade', {"profile_img": profile_img, "pics_url": []});
             } else {
                 var users = [];
@@ -77,7 +76,7 @@ app.get('/', function (req, res) {
                     "pics_url": pics_url,
                     "descriptions": descriptions,
                     "profiles": profiles,
-                    "likes":likes
+                    "likes": likes
                 });
             }
         });
@@ -121,7 +120,6 @@ app.post('/add', function (req, res) {
     var description = req.body.description;
     var username = req.session.passport.user.username;
     var profile_img = req.session.passport.user._json.profile_image_url;
-    console.log(username);
     MongoClient.connect(url, function (err, db) {
         db.collection('pictures').findOne({"username": username, "pic_url": pic_url}, function (err, item) {
             if (item) {
@@ -160,22 +158,25 @@ app.get('/mypics', function (req, res) {
                 'username': true,
                 "pic_url": true,
                 'description': true,
-                "profile_img": true
+                "profile_img": true,
+                "likes": true
             }).toArray(function (err, result) {
                 if (result.length < 1) {
                     res.render('mypics.jade', {"profile_img": profile_img, "pics_url": []});
                 } else {
                     var users = [];
-                    var id = [];
+                    var likes = [];
+                    var ids = [];
                     var pics_url = [];
                     var descriptions = [];
                     var profiles = [];
                     for (var i = 0; i < result.length; i++) {
-                        id.push(result[i].id);
+                        ids.push(result[i].id);
                         users.push(result[i].username);
                         pics_url.push(result[i].pic_url);
                         descriptions.push(result[i].description);
                         profiles.push(result[i].profile_img);
+                        likes.push(result[i].likes.length);
                     }
                     res.render('mypics.jade', {
                         "profile_img": profile_img,
@@ -184,7 +185,8 @@ app.get('/mypics', function (req, res) {
                         "pics_url": pics_url,
                         "descriptions": descriptions,
                         "profiles": profiles,
-                        "id": id
+                        "ids": ids,
+                        "likes": likes
                     });
                 }
             });
