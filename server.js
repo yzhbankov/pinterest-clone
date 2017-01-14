@@ -44,6 +44,7 @@ app.set('view engine', 'jade');
 app.use(session({secret: "secretword", resave: false, saveUninitialized: true}));
 
 app.get('/', function (req, res) {
+    var username = req.session.passport.user.username;
     MongoClient.connect(url, function (err, db) {
         var resent = db.collection('pictures').find({}, {
             "id": true,
@@ -54,7 +55,7 @@ app.get('/', function (req, res) {
             "likes": true
         }).toArray(function (err, result) {
             if (result.length < 1) {
-                res.render('allpics.jade', {"profile_img": profile_img, "pics_url": []});
+                res.render('allpics.jade', {"username":username, "profile_img": profile_img, "pics_url": []});
             } else {
                 var users = [];
                 var ids = [];
