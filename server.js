@@ -55,7 +55,7 @@ app.get('/', function (req, res) {
             "likes": true
         }).toArray(function (err, result) {
             if (result.length < 1) {
-                res.render('allpics.jade', {"username":username, "profile_img": profile_img, "pics_url": []});
+                res.render('allpics.jade', {"username": username, "profile_img": profile_img, "pics_url": []});
             } else {
                 var users = [];
                 var ids = [];
