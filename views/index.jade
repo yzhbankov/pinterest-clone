@@ -35,8 +35,8 @@ body
                     a(href="/mypics").navbar-brand My pics
                 -if(username)
                         div.navbar-brand
-                            a(data-toggle="dropdown").dropdown-toggle Add pic
-                            ul(role="menu").dropdown-menu
+                            a(class="dropdown-toggle" data-toggle="dropdown" href="#").dropdown Add pic
+                            div(style="left: auto;").dropdown-menu
                                 form(action="/add" method="POST")
                                    div.form-group
                                        input(type="text" placeholder="Pic url...:" name="pic_url").form-control#text

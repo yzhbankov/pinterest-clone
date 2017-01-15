@@ -8,8 +8,9 @@ body {
 }
 
 .footer {
-    position: fixed;
-    bottom: 20px;
+    position: relative;
+    text-align: center;
+    margin-top: 100px;
 }
 
 .grid {
@@ -50,6 +51,17 @@ body {
     color: #ffa005;
 }
 
+.form-group {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 20px;
+}
+
+.btn-block {
+    width: 80% !important;
+    margin-left: 10%;
+}
+
 .description {
     background-color: #f8f8f8;
     padding: 2px;
@@ -66,9 +78,11 @@ body {
 
 .info img {
     width: 35px;
-    margin-right: 35px;
+    margin-right: 25px;
 }
 
 .like {
-    margin-left: 25px;
+    position:absolute;
+    right: 15px;
+
 }
